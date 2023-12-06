@@ -64,25 +64,16 @@ def train():
             npoints=opt.num_points,
             data_augmentation=False)
     elif opt.dataset_type == 'modelnet40':
-        # dataset = ModelNetDataset(
-        #     root=opt.dataset,
-        #     npoints=opt.num_points,
-        #     split='trainval')
-        #
-        # test_dataset = ModelNetDataset(
-        #     root=opt.dataset,
-        #     split='test',
-        #     npoints=opt.num_points,
-        #     data_augmentation=False)
         dataset = ModelNetDataset(
-            root_dir=opt.dataset,
+            root=opt.dataset,
             npoints=opt.num_points,
-            folder='train')
+            split='train')
 
         test_dataset = ModelNetDataset(
-            root_dir=opt.dataset,
-            folder='test',
-            npoints=opt.num_points)
+            root=opt.dataset,
+            split='test',
+            npoints=opt.num_points,
+            data_augmentation=False)
     else:
         exit('wrong dataset type')
 
@@ -125,6 +116,7 @@ def train():
                 target = target[:, 0]
                 points = points.transpose(2, 1)
             elif opt.dataset_type == 'modelnet40':
+                target = target[:, 0]
                 points = points.float().transpose(2, 1)
             points, target = points.to(device), target.to(device)
             # points, target = points.to(device), target.to(device)
@@ -138,16 +130,18 @@ def train():
             optimizer.step()
             pred_choice = pred.data.max(1)[1]
             correct = pred_choice.eq(target.data).cpu().sum()
-            print('[%d: %d/%d] train loss: %f accuracy: %f' % (
-            epoch, i, num_batch, loss.item(), correct.item() / float(opt.batchSize)))
+            if i % 100 == 0:
+                print('[%d: %d/%d] train loss: %f accuracy: %f' % (
+                epoch, i, num_batch, loss.item(), correct.item() / float(opt.batchSize)))
 
-            if i % 10 == 0:
+            if i % 100 == 0:
                 j, data = next(enumerate(testdataloader, 0))
                 points, target = data
                 if opt.dataset_type == 'shapenet':
                     target = target[:, 0]
                     points = points.transpose(2, 1)
                 elif opt.dataset_type == 'modelnet40':
+                    target = target[:, 0]
                     points = points.float().transpose(2, 1)
                 points, target = points.to(device), target.to(device)
                 # points, target = points, target
@@ -169,6 +163,7 @@ def train():
             target = target[:, 0]
             points = points.transpose(2, 1)
         elif opt.dataset_type == 'modelnet40':
+            target = target[:, 0]
             points = points.float().transpose(2, 1)
         points, target = points.to(device), target.to(device)
         # points, target = points, target
