@@ -6,6 +6,12 @@ import torch
 import torch.nn.parallel
 import torch.utils.data
 from torch.autograd import Variable
+import os
+import sys
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(BASE_DIR)
+sys.path.append(BASE_DIR)
+sys.path.append(os.path.join(BASE_DIR, 'pointnet'))
 from pointnet.dataset import ShapeNetDataset
 from pointnet.model import PointNetDenseCls
 import matplotlib.pyplot as plt
@@ -15,9 +21,9 @@ import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--model', type=str, default='', help='model path')
+parser.add_argument('--model', type=str, default='/Users/daron/Desktop/daron/GEORGIATECH/COURSES/FALL2023/CS7643/final_project/point-pytorch/pointnet.pytorch/utils/seg/seg_model_Chair_0.pth', help='model path')
 parser.add_argument('--idx', type=int, default=0, help='model index')
-parser.add_argument('--dataset', type=str, default='', help='dataset path')
+parser.add_argument('--dataset', type=str, default='/Users/daron/Desktop/daron/GEORGIATECH/COURSES/FALL2023/CS7643/final_project/point-pytorch/pointnet.pytorch/shapenetcore_partanno_segmentation_benchmark_v0', help='dataset path')
 parser.add_argument('--class_choice', type=str, default='', help='class choice')
 
 opt = parser.parse_args()
